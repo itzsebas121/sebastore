@@ -1,0 +1,9 @@
+:root {
+    color-scheme: light dark;
+  --color-primary: #5539aa;
+  --color-primary-hover: #422f8f;
+  --color-secondary: #110220;
+  --color-secondary-hover: #0f021c;
+  --background: #3d4157 ;
+  --border: #9f54ea;
+}

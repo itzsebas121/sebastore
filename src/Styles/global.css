@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+*{
+    text-decoration: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Figtree';
+}
+.button-global{
+    padding: 10px 15px;
+    background-color: var(--color-primary);
+    border: 2px solid var(--border);
+    border-radius: 5px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.button-global:hover{
+    background-color: var(--color-primary-hover);
+    transform: scale(1.02);
+}
