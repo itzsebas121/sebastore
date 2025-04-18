@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import './styles.css';
 import { ShoppingCart, User } from 'lucide-react';
 
@@ -49,9 +49,10 @@ function Navbar() {
             </div>
 
             <div
-                className={`overlay ${menuOpen ? 'show' : ''}`}
+                className={`overlay-navbar ${menuOpen ? 'show' : ''}`}
                 onClick={toggleMenu}
-            ></div>
+            >
+            </div>
         </>
     );
 }
