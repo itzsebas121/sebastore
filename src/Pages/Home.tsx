@@ -1,7 +1,12 @@
+import './styles.css'
+import About from './components/About';
+import FeaturedProducts from './components/FeaturedProducts';
+
 function Home() {
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="home">
+      <About/>
+      <FeaturedProducts/>
     </div>
   );
 }

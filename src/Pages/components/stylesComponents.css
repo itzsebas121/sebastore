@@ -1,0 +1,25 @@
+.about-home, .featuredProducts-conainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2em;
+}
+.buttons-about{
+    display: flex;
+    gap: 1em;
+
+}
+.buttons-about .button-global, .buttons-about .button-global-nofill{
+    font-size: 1.03em;
+}
+.featuredProducts{
+    border: 2px solid var(--border);
+    width: auto;
+    min-height: 400px;
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 10px;
+    place-items: center;
+    gap: 1em;
+}

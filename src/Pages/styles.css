@@ -1,0 +1,8 @@
+.home{
+    background-color: var(--color-secondary);
+    padding: 25px 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    height: calc(100vh - 100px);
+    gap: 1em;
+}
