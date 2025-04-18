@@ -6,3 +6,10 @@
     height: calc(100vh - 100px);
     gap: 1em;
 }
+@media  (max-width: 600px) {
+    .home{
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        padding: 25px 20px;
+    }
+    
+}

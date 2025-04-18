@@ -23,3 +23,10 @@
     place-items: center;
     gap: 1em;
 }
+
+@media  (max-width: 400px) {
+   .featuredProducts{
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+   }
+    
+}
