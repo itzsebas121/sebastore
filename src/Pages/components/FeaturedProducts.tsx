@@ -38,6 +38,7 @@ function FeaturedProducts() {
   })
   return (
     <div className='featuredProducts-conainer'>
+      <h2>Productos destacados</h2>
       <div className="featuredProducts">
         { ProductCardList}
       </div>
