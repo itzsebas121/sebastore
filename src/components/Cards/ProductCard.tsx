@@ -1,4 +1,5 @@
 import './styleCard.css'
+import { ShoppingCart} from 'lucide-react'
 function ProductCard(props: any) {
 
 
@@ -14,6 +15,7 @@ function ProductCard(props: any) {
         <p className="name">{props.name}</p>
         <p className="description">{props.description}</p>
       </div>
+      <button className='button-global-nofill' onClick={()=>{alert(props.name)}}>Agregar<ShoppingCart></ShoppingCart></button>
     </div>
 
 

@@ -24,9 +24,12 @@
     gap: 1em;
 }
 
-@media  (max-width: 400px) {
+@media  (max-width: 450px) {
    .featuredProducts{
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding: 30px 0;
    }
-    
+   .about-home, .featuredProducts-conainer{
+    align-items: center;
+   }
 }
