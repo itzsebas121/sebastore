@@ -1,15 +1,132 @@
-.home{
-    background-color: var(--color-secondary);
-    padding: 25px 50px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    height: calc(100vh - 100px);
-    gap: 1em;
+.home {
+  background-color: var(--color-secondary);
+  padding: 25px 50px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  height: calc(100vh - 100px);
+  gap: 1em;
 }
-@media  (max-width: 600px) {
-    .home{
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        padding: 25px 20px;
-    }
-    
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  place-items: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 1em;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-secondary);
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+  background-color: var(--color-primary);
+}
+
+.pagination-button:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.pagination-button.active {
+  background-color: var(--color-tertiary);
+  color: white;
+  font-weight: bold;
+}
+
+.pagination-button.disabled {
+  cursor: not-allowed;
+  background-color: var(--color-disabled);
+  color: var(--color-tertiary);
+  border: none;
+}
+
+.ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #999;
+}
+
+.prev-next {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.prev-next.disabled {
+  cursor: not-allowed;
+  color: #ccc;
+}
+
+/* Estilo para el spinner de carga */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #e63946;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px solid #f5c6cb;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .home {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 25px 20px;
+  }
+  .product-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+  }
+  .container {
+    padding: 10px;
+  }
 }

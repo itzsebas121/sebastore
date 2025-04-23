@@ -7,5 +7,8 @@
   --background: #3d4157 ;
   --border: #9f54ea;
   --color-text: #f5f5f5;
-  --color-tertiary: rgb(220, 20, 60);
+  --color-tertiary: #cb0303;
+  --color-tertiary-hover: #ad0f0f;
+  --color-disabled: #6c5e75;  
+
 }
