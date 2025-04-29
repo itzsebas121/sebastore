@@ -10,9 +10,10 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Usar rutas
 const productosRouter = require("./routes/productos");
+const categoriasRouter = require("./routes/categorias");;
 app.use("/api/productos", productosRouter);
+app.use("/api/categorias", categoriasRouter);
 
 app.listen(port, () => {
   console.log(`🚀 Server ready on http://localhost:${port}`);

@@ -1,10 +1,12 @@
 "use client";
 import config from "../config";
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import ListProductCard from "./components/ListProductCard";
+import { useEffect, useState, lazy, Suspense } from "react";
 import "./styles.css";
 
+interface Category {
+  Id: number;
+  Nombre: string;
+}
 
 interface Product {
   ProductoId: number;
@@ -12,182 +14,136 @@ interface Product {
   ImagenUrl: string;
   Descripcion: string;
   Precio: number;
+  CategoriaNombre: string;
 }
 
 interface PaginatedData {
   data: Product[];
   currentPage: number;
+  pageSize: number;
+  totalItems: number;
   totalPages: number;
 }
 
-function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+// Lazy load del grid
+const ProductGrid = lazy(() => import("./components/ProductGrid"));
 
+export default function Products() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Todas");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Carga categorías
+  useEffect(() => {
+    fetch(`${config.apiBaseUrl}/api/categorias`)
+      .then((res) => res.json())
+      .then((data: Category[]) => {
+        setCategories([{ Id: 0, Nombre: "Todas" }, ...data]);
+      })
+      .catch(() => setCategories([{ Id: 0, Nombre: "Todas" }]));
+  }, []);
+
+  // Debounce de búsqueda
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm.trim());
+      setCurrentPage(1);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  // Fetch productos
   const fetchProducts = (page: number) => {
     setLoading(true);
-    fetch(`${config.apiBaseUrl}/api/productos?page=${page}&pageSize=8`)
-      .then((response) => {
-        if (!response.ok) throw new Error("Error al cargar los productos");
-        return response.json();
+
+    const params = new URLSearchParams({
+      page: page.toString(),
+      pageSize: "8",
+    });
+
+    if (selectedCategory !== "Todas") {
+      params.append("categoria", selectedCategory);
+    }
+    if (debouncedSearch) {
+      params.append("search", debouncedSearch);
+    }
+
+    fetch(`${config.apiBaseUrl}/api/productos?${params}`)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
       })
       .then((data: PaginatedData) => {
         setProducts(data.data);
-        setTotalPages(data.totalPages);
         setCurrentPage(data.currentPage);
-        setLoading(false);
+        setTotalPages(data.totalPages);
       })
-      .catch(() => {
-        setError("Error al cargar los productos");
-        setLoading(false);
-      });
+      .catch()
+      .finally(() => setLoading(false));
   };
 
+  // Re-fetch principal
   useEffect(() => {
     fetchProducts(currentPage);
-  }, [currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, selectedCategory, debouncedSearch]);
 
+  // Cambio de página
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  // Función para generar los botones de paginación
-  const renderPaginationButtons = () => {
-    const buttons = [];
-    const maxVisibleButtons = 5;
-
-    // Siempre mostrar la primera página
-    buttons.push(
-      <button
-        key={1}
-        onClick={() => handlePageChange(1)}
-        className={`pagination-button ${currentPage === 1 ? "active" : ""}`}
-      >
-        1
-      </button>
-    );
-
-    // Lógica para mostrar puntos suspensivos y páginas intermedias
-    if (totalPages > maxVisibleButtons) {
-      let startPage = Math.max(2, currentPage - Math.floor(maxVisibleButtons / 2));
-      const endPage = Math.min(totalPages - 1, startPage + maxVisibleButtons - 3);
-
-      if (endPage - startPage < maxVisibleButtons - 3) {
-        startPage = Math.max(2, endPage - (maxVisibleButtons - 3) + 1);
-      }
-
-      // Puntos suspensivos al inicio si es necesario
-      if (startPage > 2) {
-        buttons.push(
-          <span key="start-ellipsis" className="ellipsis">...</span>
-        );
-      }
-
-      // Páginas intermedias
-      for (let i = startPage; i <= endPage; i++) {
-        buttons.push(
-          <button
-            key={i}
-            onClick={() => handlePageChange(i)}
-            className={`pagination-button ${currentPage === i ? "active" : ""}`}
-          >
-            {i}
-          </button>
-        );
-      }
-
-      // Puntos suspensivos al final si es necesario
-      if (endPage < totalPages - 1) {
-        buttons.push(
-          <span key="end-ellipsis" className="ellipsis">...</span>
-        );
-      }
-    } else {
-      // Si hay pocas páginas, mostrar todas
-      for (let i = 2; i < totalPages; i++) {
-        buttons.push(
-          <button
-            key={i}
-            onClick={() => handlePageChange(i)}
-            className={`pagination-button ${currentPage === i ? "active" : ""}`}
-          >
-            {i}
-          </button>
-        );
-      }
-    }
-
-    // Siempre mostrar la última página si hay más de una
-    if (totalPages > 1) {
-      buttons.push(
-        <button
-          key={totalPages}
-          onClick={() => handlePageChange(totalPages)}
-          className={`pagination-button ${currentPage === totalPages ? "active" : ""}`}
-        >
-          {totalPages}
-        </button>
-      );
-    }
-
-    return buttons;
-  };
-
-  if (loading)
-    return (
-      <div className="loading-spinner">
-        <div className="spinner"></div>
-      </div>
-    );
-
-  if (error)
-    return <div className="error-message">Error: {error}</div>;
 
   return (
     <div className="container">
-      <div className="product-grid">
-        {products.map((product) => (
-          <ListProductCard
-            key={product.ProductoId}
-            name={product.ProductoNombre}
-            image={product.ImagenUrl}
-            description={product.Descripcion}
-            price={product.Precio}
-          />
-        ))}
+      {/* --- filtros y búsqueda --- */}
+      <div className="filters">
+      <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select
+          value={selectedCategory}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value);
+            setCurrentPage(1);
+          }}
+        >
+          {categories.map((cat) => (
+            <option key={cat.Id} value={cat.Nombre}>
+              {cat.Nombre}
+            </option>
+          ))}
+        </select>
+
+        
       </div>
 
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`pagination-button prev-next ${currentPage === 1 ? "disabled" : ""}`}
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          <div className="pagination-buttons">
-            {renderPaginationButtons()}
+      {/* --- aquí sólo renderizamos/lazy‐load el grid --- */}
+      <Suspense
+        fallback={
+          <div className="loading-spinner">
+            <div className="spinner" />
           </div>
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`pagination-button prev-next ${currentPage === totalPages ? "disabled" : ""}`}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-      )}
+        }
+      >
+        <ProductGrid
+          products={products}
+          loading={loading}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </Suspense>
     </div>
   );
 }
-
-export default Products;

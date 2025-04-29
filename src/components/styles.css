@@ -8,6 +8,8 @@
     border-bottom: var(--border) 2px solid;
     position: relative;
     z-index: 100;
+    position: sticky;
+    top: 0;
   }
   
   .logo-nav a {

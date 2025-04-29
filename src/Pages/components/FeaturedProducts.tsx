@@ -13,7 +13,7 @@ function FeaturedProducts() {
       id: 2,
       name: "Spotify 3 Meses ",
       price: 19.99,
-      image: "https://www.santandersmusic.com/media/magazine/spotify-2-1.jpg",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQS5hXOribY66heNB4tI1LOmEkZibejnuJx8A&s",
       description: "This is a product description."
     },
     {

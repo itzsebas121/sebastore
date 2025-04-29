@@ -116,6 +116,34 @@
   border: 1px solid #f5c6cb;
   margin-top: 20px;
 }
+ .filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.filters select,
+.filters input {
+  flex: 1 1 200px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filters select:focus,
+.filters input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px var(--color-secondary-hover);
+}
+
+.filters input::placeholder {
+  color: #888;
+}
+
 
 @media (max-width: 600px) {
   .home {
@@ -128,5 +156,8 @@
   }
   .container {
     padding: 10px;
+  }
+  .filters {
+    gap: 0.75rem;
   }
 }
