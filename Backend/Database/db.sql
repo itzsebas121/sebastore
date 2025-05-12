@@ -18,7 +18,7 @@ CREATE TABLE Categorias (
 );
 
 CREATE TABLE Productos (
-    ProductoId INT IDENTITY PRIMARY KEY,
+    Id INT IDENTITY PRIMARY KEY,
     Nombre NVARCHAR(100) NOT NULL,
     Descripcion NVARCHAR(MAX),
     Precio DECIMAL(10, 2) NOT NULL,
@@ -26,6 +26,25 @@ CREATE TABLE Productos (
     ImagenUrl NVARCHAR(300)
 );
 
+CREATE TABLE Ventas (
+    VentaId INT IDENTITY PRIMARY KEY,
+    ProductoId INT NOT NULL FOREIGN KEY REFERENCES Productos(Id),
+    ClienteId INT NOT NULL FOREIGN KEY REFERENCES Clientes(ClienteId),
+    FechaVenta DATETIME NOT NULL DEFAULT GETDATE(),
+    PrecioUnitario DECIMAL(10, 2) NOT NULL,
+    ValorTotal DECIMAL(10, 2) NOT NULL,
+    DescripcionEntrega NVARCHAR(MAX),
+    Estado NVARCHAR(20) NOT NULL DEFAULT 'Pendiente'
+        CHECK (Estado IN ('Pendiente', 'Cancelado', 'Completado'))
+);
+
+CREATE TABLE HistorialEstadoVenta (
+    HistorialId INT IDENTITY PRIMARY KEY,
+    VentaId INT NOT NULL FOREIGN KEY REFERENCES Ventas(VentaId),
+    EstadoAnterior NVARCHAR(20) NOT NULL,
+    EstadoNuevo NVARCHAR(20) NOT NULL,
+    FechaCambio DATETIME NOT NULL DEFAULT GETDATE()
+);
 
 -------
 

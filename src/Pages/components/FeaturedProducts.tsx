@@ -31,9 +31,9 @@ function FeaturedProducts() {
       description: "This is a product description."
     }
   ]
-  const ProductCardList = Products.map((product) => {
+  const ProductCardList = Products.map((product, index) => {
     return (
-      <ProductCard name={product.name} image={product.image} price={product.price} description={product.description} />
+      <ProductCard  key={index} name={product.name} image={product.image} price={product.price} description={product.description} />
     )
   })
   return (
