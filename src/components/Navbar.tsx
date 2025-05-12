@@ -32,7 +32,6 @@ function Navbar() {
                     </div>
                 </nav>
 
-                {/* ÍCONOS + LOGIN DE ESCRITORIO */}
                 <div className="buttons-nav">
                     <div className="icons-nav">
                         <ShoppingCart className="icon-nav" />
