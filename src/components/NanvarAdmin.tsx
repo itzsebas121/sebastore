@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './styles.css';
 import { User } from 'lucide-react';
 
@@ -23,8 +23,8 @@ function NavbarAdmin() {
                 <div className="logo-nav"><a href="/admin">Panel Admin</a></div>
                 <nav className={`nav-list ${menuOpen ? 'open' : ''}`}>
                     <ul>
-                        <li><a href="/pedidos" onClick={handleLinkClick}>Pedidos</a></li>
-                        <li><a href="/historial" onClick={handleLinkClick}>Historial</a></li>
+                        <li><a href="/admin/pedidos" onClick={handleLinkClick}>Pedidos</a></li>
+                        <li><a href="/admin/historial" onClick={handleLinkClick}>Historial</a></li>
                         <li><a onClick={logout}>Cerrar sesión</a></li>
                     </ul>
                 </nav>

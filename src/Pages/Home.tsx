@@ -1,6 +1,6 @@
-import './styles.css'
-import About from './components/About';
-import FeaturedProducts from './components/FeaturedProducts';
+import './Client/styles.css'
+import About from './Client/About';
+import FeaturedProducts from './Client/FeaturedProducts';
 
 function Home() {
   return (

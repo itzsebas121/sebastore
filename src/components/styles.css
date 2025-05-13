@@ -72,8 +72,11 @@
   .btn-menu, .hamburger{
     display: none;
   }
-  
+  .btn-mobile{
+    display: none;
+  }
   @media (max-width: 768px) {
+   
     .nav-list ul,
     .btn-login-nav.desktop {
       display: none;
@@ -96,7 +99,6 @@
       border-radius: 2px;
     }
   
-    /* Panel deslizante */
     .nav-list {
       position: fixed;
       top: 0;
@@ -122,10 +124,10 @@
       align-items: center;
     }
   
-    .nav-list .btn-login-nav.mobile {
+    .btn-mobile {
       display: none;
     }
-    .nav-list.open .btn-login-nav.mobile {
+    .btn-mobile{
       display: flex;
       margin: 1.5em;
     }

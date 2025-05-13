@@ -1,5 +1,5 @@
 "use client";
-import config from "../config";
+import config from "../../config";
 import { useEffect, useState, lazy, Suspense } from "react";
 import "./styles.css";
 
@@ -26,7 +26,7 @@ interface PaginatedData {
 }
 
 // Lazy load del grid
-const ProductGrid = lazy(() => import("./components/ProductGrid"));
+const ProductGrid = lazy(() => import("./ProductGrid"));
 
 export default function Products() {
   const [categories, setCategories] = useState<Category[]>([]);

@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ListProductCard from "./ListProductCard";
-import "../styles.css";
+import ListProductCard from "../Client/ListProductCard";
+import "./styles.css";
 
 interface Product {
   ProductoId: number;
