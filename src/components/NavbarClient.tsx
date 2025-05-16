@@ -1,56 +1,129 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, User } from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; 
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { ShoppingCart, User } from "lucide-react"
+import { useAuth } from "../context/AuthContext"
+import CartOverlay from "./CartOverlay/CartOverlay"
+import ProfileMenu from "./ProfileMenu/ProfileMenu"
+import "./styles.css"
 
 function NavbarCliente() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const { tipoUsuario, logout } = useAuth(); 
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const navigate = useNavigate()
+  const { tipoUsuario, logout, isAuthChecked } = useAuth()
 
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
-  const handleLinkClick = () => setMenuOpen(false);
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev)
+    // Close other menus when opening hamburger menu
+    setCartOpen(false)
+    setProfileOpen(false)
+  }
+
+  const toggleCart = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setCartOpen((prev) => !prev)
+    // Close other menus when opening cart
+    setProfileOpen(false)
+    setMenuOpen(false)
+  }
+
+  const toggleProfile = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setProfileOpen((prev) => !prev)
+    // Close other menus when opening profile
+    setCartOpen(false)
+    setMenuOpen(false)
+  }
+
+  const handleLinkClick = () => {
+    setMenuOpen(false)
+    setCartOpen(false)
+    setProfileOpen(false)
+  }
+
   const handleLoginClick = () => {
     if (tipoUsuario) {
-      logout(); 
-      navigate('/'); 
+      logout()
+      navigate("/")
     } else {
-      navigate('/login'); 
+      navigate("/login")
     }
-  };
+    handleLinkClick()
+  }
+
+  const closeAllOverlays = () => {
+    setCartOpen(false)
+    setProfileOpen(false)
+  }
 
   return (
     <>
       <div className="navbar">
-        <div className="logo-nav"><a href="/">SebaStore</a></div>
-        <nav className={`nav-list ${menuOpen ? 'open' : ''}`}>
+        <div className="logo-nav">
+          <a href="/">SebaStore</a>
+        </div>
+        <nav className={`nav-list ${menuOpen ? "open" : ""}`}>
           <ul>
-            <li><a href="/" onClick={handleLinkClick}>Inicio</a></li>
-            <li><a href="/products" onClick={handleLinkClick}>Productos</a></li>
-            <li><a href="/contact" onClick={handleLinkClick}>Contacto</a></li>
+            <li>
+              <a href="/" onClick={handleLinkClick}>
+                Inicio
+              </a>
+            </li>
+            <li>
+              <a href="/products" onClick={handleLinkClick}>
+                Productos
+              </a>
+            </li>
+            <li>
+              <a href="/contact" onClick={handleLinkClick}>
+                Contacto
+              </a>
+            </li>
           </ul>
           <div className="btn-mobile">
-            <button className="button-global btn-menu" onClick={handleLoginClick}>
-              {tipoUsuario ? 'Cerrar Sesión' : 'Iniciar Sesión'} {/* Cambiar el texto según si está logueado */}
-            </button>
+            {isAuthChecked && !tipoUsuario && (
+              <button className="button-global btn-menu" onClick={handleLoginClick}>
+                Iniciar Sesión
+              </button>
+            )}
           </div>
         </nav>
         <div className="buttons-nav">
           <div className="icons-nav">
-            <ShoppingCart className="icon-nav" />
-            <User className="icon-nav" />
+            <div className="icon-container" onClick={toggleCart}>
+              <ShoppingCart className="icon-nav" />
+              {cartOpen && <CartOverlay onClose={() => setCartOpen(false)} />}
+            </div>
+            <div className="icon-container" onClick={toggleProfile}>
+              <User className="icon-nav" />
+              {profileOpen && (
+                <ProfileMenu
+                  isLoggedIn={!!tipoUsuario}
+                  onLogout={handleLoginClick}
+                />
+              )}
+            </div>
           </div>
           <div className="btn-login-nav desktop">
-            <button className="button-global" onClick={handleLoginClick}>
-              {tipoUsuario ? 'Cerrar Sesión' : 'Iniciar Sesión'} {/* Cambiar el texto según si está logueado */}
-            </button>
+            {isAuthChecked && !tipoUsuario && (
+              <button className="button-global" onClick={handleLoginClick}>
+                Iniciar Sesión
+              </button>
+            )}
           </div>
         </div>
-        <div className="hamburger" onClick={toggleMenu}><div></div><div></div><div></div></div>
+        <div className="hamburger" onClick={toggleMenu}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       </div>
-      <div className={`overlay-navbar ${menuOpen ? 'show' : ''}`} onClick={toggleMenu} />
+      <div
+        className={`overlay-navbar ${menuOpen || cartOpen || profileOpen ? "show" : ""}`}
+        onClick={closeAllOverlays}
+      />
     </>
-  );
+  )
 }
-
-export default NavbarCliente;
+export default NavbarCliente

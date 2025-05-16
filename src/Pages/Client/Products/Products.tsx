@@ -1,7 +1,7 @@
 "use client";
-import config from "../../config";
+import config from "../../../config";
 import { useEffect, useState, lazy, Suspense } from "react";
-import "./styles.css";
+import "../styles.css";
 
 interface Category {
   Id: number;
@@ -25,7 +25,6 @@ interface PaginatedData {
   totalPages: number;
 }
 
-// Lazy load del grid
 const ProductGrid = lazy(() => import("./ProductGrid"));
 
 export default function Products() {
@@ -88,10 +87,8 @@ export default function Products() {
       .finally(() => setLoading(false));
   };
 
-  // Re-fetch principal
   useEffect(() => {
     fetchProducts(currentPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, selectedCategory, debouncedSearch]);
 
   // Cambio de página
@@ -103,7 +100,6 @@ export default function Products() {
 
   return (
     <div className="container">
-      {/* --- filtros y búsqueda --- */}
       <div className="filters">
       <input
           type="text"

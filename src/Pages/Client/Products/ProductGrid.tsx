@@ -1,6 +1,9 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ListProductCard from "../Client/ListProductCard";
-import "./styles.css";
+import ListProductCard from "./ListProductCard";
+import { useAuth } from "../../../context/AuthContext";
+import "../styles.css";
+import { useEffect } from "react";
+
 
 interface Product {
   ProductoId: number;
@@ -26,6 +29,15 @@ export default function ProductGrid({
   totalPages,
   onPageChange,
 }: Props) {
+  const { token } = useAuth();
+  useEffect(() => {
+    if (token) {
+      if(!token){
+        alert("No estas logueado");
+      }
+    }
+  }, [token]);
+
   if (loading) {
     return (
       <div className="loading-spinner">
