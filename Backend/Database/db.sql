@@ -45,39 +45,168 @@ CREATE TABLE HistorialEstadoVenta (
     EstadoNuevo NVARCHAR(20) NOT NULL,
     FechaCambio DATETIME NOT NULL DEFAULT GETDATE()
 );
+CREATE TABLE Carts (
+    CartId INT PRIMARY KEY IDENTITY,
+    ClienteId INT NOT NULL,
+    IsActive BIT DEFAULT 1,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (ClienteId) REFERENCES Clientes(ClienteId)
+);
+CREATE TABLE CartItems (
+    CartItemId INT PRIMARY KEY IDENTITY,
+    CartId INT NOT NULL,
+    ProductoId INT NOT NULL,
+    Quantity INT NOT NULL CHECK (Quantity > 0),
+    Price DECIMAL(10, 2) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CartId) REFERENCES Carts(CartId),
+    FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+);
 
--------
-
-CREATE OR ALTER PROCEDURE ValidarLogin
-    @Correo NVARCHAR(100),
-    @Contrasena NVARCHAR(100)
+CREATE PROCEDURE AgregarAlCarrito
+    @ClienteId INT,
+    @ProductoId INT,
+    @Cantidad INT
 AS
 BEGIN
     SET NOCOUNT ON;
+
+    DECLARE @CartId INT;
+
+    -- Obtener el carrito activo del cliente
+    SELECT @CartId = CartId
+    FROM Carts
+    WHERE ClienteId = @ClienteId AND IsActive = 1;
+
+    -- Si no hay carrito activo, crear uno
+    IF @CartId IS NULL
+    BEGIN
+        INSERT INTO Carts (ClienteId)
+        VALUES (@ClienteId);
+
+        SET @CartId = SCOPE_IDENTITY();
+    END
+
+    DECLARE @PrecioProducto DECIMAL(10,2);
+    SELECT @PrecioProducto = Precio FROM Productos WHERE Id = @ProductoId;
+
+    -- Verificar si ya existe ese producto en el carrito
+    IF EXISTS (
+        SELECT 1 FROM CartItems
+        WHERE CartId = @CartId AND ProductoId = @ProductoId
+    )
+    BEGIN
+        -- Si existe, actualizar la cantidad
+        UPDATE CartItems
+        SET Quantity = Quantity + @Cantidad,
+            UpdatedAt = GETDATE()
+        WHERE CartId = @CartId AND ProductoId = @ProductoId;
+    END
+    ELSE
+    BEGIN
+        -- Si no existe, agregarlo
+        INSERT INTO CartItems (CartId, ProductoId, Quantity, Price)
+        VALUES (@CartId, @ProductoId, @Cantidad, @PrecioProducto);
+    END
+END;
+
+go;
+
+CREATE OR ALTER PROCEDURE VerCarritoActivo
+    @ClienteId INT
+AS BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        ci.CartItemId,
+        p.Nombre AS Producto,
+        p.Descripcion,
+        p.ImagenUrl, -- <-- añadimos esta columna
+        ci.Quantity,
+        ci.Price,
+        (ci.Quantity * ci.Price) AS Subtotal,
+        ci.CreatedAt,
+        c.CartId
+    FROM Carts c
+    INNER JOIN CartItems ci ON c.CartId = ci.CartId
+    INNER JOIN Productos p ON ci.ProductoId = p.Id
+    WHERE c.ClienteId = @ClienteId AND c.IsActive = 1;
+END;
+
+
+-------
+
+CREATE PROCEDURE ActualizarCantidadCarrito
+    @CartId INT,
+    @ProductoId INT,
+    @NuevaCantidad INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Verificar si el carrito está activo
+    IF NOT EXISTS (SELECT 1 FROM Carts WHERE CartId = @CartId AND IsActive = 1)
+    BEGIN
+        RAISERROR('Carrito no encontrado o inactivo.', 16, 1);
+        RETURN;
+    END
+
+    -- Si la nueva cantidad es menor o igual a 0, eliminar el producto del carrito
+    IF @NuevaCantidad <= 0
+    BEGIN
+        DELETE FROM CartItems
+        WHERE CartId = @CartId AND ProductoId = @ProductoId;
+    END
+    ELSE
+    BEGIN
+        -- Actualizar la cantidad si el producto existe en el carrito
+        IF EXISTS (SELECT 1 FROM CartItems WHERE CartId = @CartId AND ProductoId = @ProductoId)
+        BEGIN
+            UPDATE CartItems
+            SET Quantity = @NuevaCantidad,
+                UpdatedAt = GETDATE()
+            WHERE CartId = @CartId AND ProductoId = @ProductoId;
+        END
+        ELSE
+        BEGIN
+            RAISERROR('El producto no existe en el carrito.', 16, 1);
+        END
+    END
+END;
+
+--------
+CREATE OR ALTER PROCEDURE ValidarLogin
+    @Correo NVARCHAR(100),
+    @Contrasena NVARCHAR(100)
+AS BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @ContrasenaHash NVARCHAR(256) = CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', @Contrasena), 2);
 
     IF EXISTS (
         SELECT 1
         FROM Usuarios u
         WHERE u.Correo = @Correo
-          AND u.ContrasenaHash = CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', @Contrasena), 2)
+          AND u.ContrasenaHash = @ContrasenaHash
     )
     BEGIN
         SELECT 
+            u.UsuarioId,
             c.Nombre,
             c.Apellido,
             u.TipoUsuario
         FROM Usuarios u
         LEFT JOIN Clientes c ON u.UsuarioId = c.UsuarioId
         WHERE u.Correo = @Correo
-          AND u.ContrasenaHash = CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', @Contrasena), 2);
+          AND u.ContrasenaHash = @ContrasenaHash;
     END
     ELSE
     BEGIN
         RAISERROR('Correo o contraseña incorrectos.', 16, 1);
     END
 END;
-
-
 
 --------
 

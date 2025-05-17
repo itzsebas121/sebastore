@@ -7,12 +7,11 @@ function HeroSection() {
   return (
     <div className="hero-container">
       <div className="hero-content">
-        <div className="hero-badge">¡OFERTAS EXCLUSIVAS!</div>
         <h1 className="hero-title">Entretenimiento Premium a tu Alcance</h1>
+        <div className="hero-badge">¡OFERTAS EXCLUSIVAS!</div>
         <p className="hero-description">
           Disfruta de tus plataformas favoritas con los mejores precios del mercado. ¡Hasta un 70% de descuento!
         </p>
-
         <div className="hero-benefits">
           <div className="benefit-item">
             <Check size={16} className="benefit-icon" />
@@ -27,8 +26,6 @@ function HeroSection() {
             <span>Reembolso garantizado</span>
           </div>
         </div>
-
-
       </div>
       <div className="hero-services">
         <div className="service-logo">

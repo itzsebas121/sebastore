@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
     const result = await pool.request()
       .input("Correo", correo)
       .input("Contrasena", contrasena)
-      .execute("ValidarLogin");
+      .execute("ValidarLogin"); 
 
     if (result.recordset.length === 0) {
       return res.status(401).json({ error: "Correo o contraseña incorrectos." });
@@ -25,6 +25,7 @@ router.post("/", async (req, res) => {
     const user = result.recordset[0];
 
     const payload = {
+      id: user.UsuarioId,
       nombre: user.Nombre,
       apellido: user.Apellido,
       tipoUsuario: user.TipoUsuario,

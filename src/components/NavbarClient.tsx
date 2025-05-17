@@ -4,6 +4,7 @@ import { ShoppingCart, User } from "lucide-react"
 import { useAuth } from "../context/AuthContext"
 import CartOverlay from "./CartOverlay/CartOverlay"
 import ProfileMenu from "./ProfileMenu/ProfileMenu"
+import { jwtDecode } from "jwt-decode"
 import "./styles.css"
 
 function NavbarCliente() {
@@ -11,11 +12,22 @@ function NavbarCliente() {
   const [cartOpen, setCartOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const navigate = useNavigate()
-  const { tipoUsuario, logout, isAuthChecked } = useAuth()
+  const { tipoUsuario, logout, isAuthChecked, token } = useAuth()
+
+  // Decodificar el token para obtener el ID del cliente
+  let clientId: number | null = null;
+  if (token) {
+    try {
+      const decodedToken: any = jwtDecode(token);
+      clientId = decodedToken.id || null;
+    } catch (error) {
+      console.error("Error decodificando token:", error);
+    }
+  }
+
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev)
-    // Close other menus when opening hamburger menu
     setCartOpen(false)
     setProfileOpen(false)
   }
@@ -23,7 +35,6 @@ function NavbarCliente() {
   const toggleCart = (e: React.MouseEvent) => {
     e.stopPropagation()
     setCartOpen((prev) => !prev)
-    // Close other menus when opening cart
     setProfileOpen(false)
     setMenuOpen(false)
   }
@@ -31,7 +42,6 @@ function NavbarCliente() {
   const toggleProfile = (e: React.MouseEvent) => {
     e.stopPropagation()
     setProfileOpen((prev) => !prev)
-    // Close other menus when opening profile
     setCartOpen(false)
     setMenuOpen(false)
   }
@@ -93,7 +103,9 @@ function NavbarCliente() {
           <div className="icons-nav">
             <div className="icon-container" onClick={toggleCart}>
               <ShoppingCart className="icon-nav" />
-              {cartOpen && <CartOverlay onClose={() => setCartOpen(false)} />}
+              {cartOpen  && (
+                <CartOverlay onClose={() => setCartOpen(false)} clientId={clientId ?? 0} isLoggedIn={!!tipoUsuario}/>
+              )}
             </div>
             <div className="icon-container" onClick={toggleProfile}>
               <User className="icon-nav" />
@@ -126,4 +138,5 @@ function NavbarCliente() {
     </>
   )
 }
+
 export default NavbarCliente

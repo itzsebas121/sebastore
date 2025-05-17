@@ -1,20 +1,22 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 
-import Login from "./Pages/Login/Login";
-import Registro from "./Pages/Login/Registro";
-import AdminDashboard from "./Pages/Admin/AdminDashboard";
-import ClienteDashboard from "./Pages/Client/ClientDashboard";
+const Login = lazy(() => import("./Pages/Login/Login"));
+const Registro = lazy(() => import("./Pages/Login/Registro"));
+const AdminDashboard = lazy(() => import("./Pages/Admin/AdminDashboard"));
+const ClienteDashboard = lazy(() => import("./Pages/Client/ClientDashboard"));
 
-import Home from "./Pages/Client/Home/Home";
-import Products from "./Pages/Client/Products/Products";
-import Checkout from "./Pages/Client/Checkout";
+const Home = lazy(() => import("./Pages/Client/Home/Home"));
+const Products = lazy(() => import("./Pages/Client/Products/Products"));
+const Checkout = lazy(() => import("./Pages/Client/Checkout"));
+const Contact = lazy(() => import("./Pages/Client/Contact/Contact"));
 
-import NavbarCliente from "./components/NavbarClient";
-import NavbarAdmin from "./components/NanvarAdmin";
+const NavbarCliente = lazy(() => import("./components/NavbarClient"));
+const NavbarAdmin = lazy(() => import("./components/NanvarAdmin"));
 
-import AdminSales from "./Pages/Admin/AdminSales";
+const AdminSales = lazy(() => import("./Pages/Admin/AdminSales"));
 
 import "./Styles/global.css";
 import "./Styles/var.css";
@@ -24,48 +26,51 @@ function App() {
 
   return (
     <BrowserRouter>
-      {tipoUsuario === "Admin" ? <NavbarAdmin /> : <NavbarCliente />}
+      <Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Cargando...</div>}>
+        {tipoUsuario === "Admin" ? <NavbarAdmin /> : <NavbarCliente />}
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Registro />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+          <Route path="/contact" element={<Contact />} />
 
-        <Route
-          path="/checkout/:id"
-          element={
-            <ProtectedRoute allowedRoles={["Cliente", "Admin"]}>
-              <Checkout />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/checkout/:id"
+            element={
+              <ProtectedRoute allowedRoles={["Cliente", "Admin"]}>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/cliente"
-          element={
-            <ProtectedRoute allowedRoles={["Cliente"]}>
-              <ClienteDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Navigate to="/products" replace />} />
-        </Route>
+          <Route
+            path="/cliente"
+            element={
+              <ProtectedRoute allowedRoles={["Cliente"]}>
+                <ClienteDashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/products" replace />} />
+          </Route>
 
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={["Admin"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminSales />} />
-          <Route path="pedidos" element={<AdminSales />} />
-        </Route>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminSales />} />
+            <Route path="pedidos" element={<AdminSales />} />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

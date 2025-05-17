@@ -8,25 +8,21 @@ router.get("/", async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const offset = (page - 1) * pageSize;
 
-    const categoria = req.query.categoria; // nombre de la categoría (opcional)
-    const search = req.query.search;       // término de búsqueda (opcional)
+    const categoria = req.query.categoria;
+    const search = req.query.search;
 
     const pool = await poolPromise;
 
-    // Base de la consulta
     let baseQuery = "FROM Vista_ProductosConCategoria WHERE 1=1";
 
-    // Filtro por categoría (si no es "Todas")
     if (categoria && categoria !== "Todas") {
       baseQuery += ` AND CategoriaNombre = @categoria`;
     }
 
-    // Filtro por búsqueda de nombre (search)
     if (search) {
       baseQuery += ` AND ProductoNombre LIKE '%' + @search + '%'`;
     }
 
-    // Obtener total de productos con filtros aplicados
     const totalResult = await pool.request()
       .input("categoria", categoria || "")
       .input("search", search || "")
@@ -34,7 +30,6 @@ router.get("/", async (req, res) => {
 
     const total = totalResult.recordset[0].total;
 
-    // Consulta paginada con filtros aplicados
     const productsResult = await pool.request()
       .input("categoria", categoria || "")
       .input("search", search || "")

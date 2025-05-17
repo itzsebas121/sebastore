@@ -2,8 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ListProductCard from "./ListProductCard";
 import { useAuth } from "../../../context/AuthContext";
 import "../styles.css";
-import { useEffect } from "react";
-
+import { jwtDecode } from "jwt-decode";
 
 interface Product {
   ProductoId: number;
@@ -30,13 +29,15 @@ export default function ProductGrid({
   onPageChange,
 }: Props) {
   const { token } = useAuth();
-  useEffect(() => {
-    if (token) {
-      if(!token){
-        alert("No estas logueado");
-      }
+  let clientId: number | null = null;
+  if (token) {
+    try {
+      const decodedToken: any = jwtDecode(token);
+      clientId = decodedToken.id || null;
+    } catch (error) {
+      console.error("Error decodificando token:", error);
     }
-  }, [token]);
+  }
 
   if (loading) {
     return (
@@ -112,10 +113,12 @@ export default function ProductGrid({
         {products.map((p) => (
           <ListProductCard
             key={p.ProductoId}
+            id={p.ProductoId}
             name={p.ProductoNombre}
             image={p.ImagenUrl}
             description={p.Descripcion}
             price={p.Precio}
+            clientId={clientId || 0}
           />
         ))}
       </div>
