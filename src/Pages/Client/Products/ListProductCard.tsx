@@ -2,6 +2,7 @@ import { useState } from "react";
 import './Products.css'
 import { useAuth } from '../../../context/AuthContext';
 import config from '../../../config';
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   id: number;
@@ -14,12 +15,12 @@ interface ProductCardProps {
 
 const ListProductCard = ({ name, image, description, price, id, clientId }: ProductCardProps) => {
   const { token } = useAuth();
-
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleAdd = async () => {
     if (!token) {
-      alert("No estás logueado");
+      navigate("/login");
       return;
     }
     setLoading(true);

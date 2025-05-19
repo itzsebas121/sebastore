@@ -42,6 +42,7 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
   })
 
   const overlayRef = useRef<HTMLDivElement>(null)
+  const isClosingRef = useRef<boolean>(false)
 
   useEffect(() => {
     if (!token || !isLoggedIn) {
@@ -71,15 +72,28 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
   }, [clientId, token, isLoggedIn])
 
   useEffect(() => {
+    // Función para manejar clics fuera del overlay
     const handleClickOutside = (event: MouseEvent) => {
-      if (overlayRef.current && !overlayRef.current.contains(event.target as Node)) {
-        onClose()
+      // No cerrar si estamos en proceso de eliminación o si el clic fue dentro del overlay
+      if (
+        deleteConfirmation.isOpen ||
+        isClosingRef.current ||
+        (overlayRef.current && overlayRef.current.contains(event.target as Node))
+      ) {
+        return
       }
+
+      isClosingRef.current = true
+      onClose()
+      // Resetear la bandera después de un breve retraso
+      setTimeout(() => {
+        isClosingRef.current = false
+      }, 100)
     }
 
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [onClose])
+  }, [onClose, deleteConfirmation.isOpen])
 
   const confirmDelete = (id: number, name: string, e: React.MouseEvent) => {
     e.stopPropagation()
@@ -87,7 +101,7 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
   }
 
   const handleRemoveItem = (id: number) => {
-    setCartItems(prev => prev?.filter(item => item.CartItemId !== id) || [])
+    setCartItems((prev) => prev?.filter((item) => item.CartItemId !== id) || [])
     setDeleteConfirmation({ isOpen: false, itemId: null, itemName: "" })
   }
 
@@ -95,63 +109,61 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
     setDeleteConfirmation({ isOpen: false, itemId: null, itemName: "" })
   }
 
-  const handleQuantityChange = (id: number, newQuantity: number) => {
+  const handleQuantityChange = (id: number, newQuantity: number, e?: React.MouseEvent) => {
+    // Detener la propagación del evento si existe
+    if (e) {
+      e.stopPropagation()
+    }
+
     if (!cartItems || newQuantity < 1) return
+
     setCartItems(
-      cartItems.map(item =>
-        item.CartItemId === id ? { ...item, Quantity: newQuantity, Subtotal: newQuantity * item.Price } : item
-      )
+      cartItems.map((item) =>
+        item.CartItemId === id ? { ...item, Quantity: newQuantity, Subtotal: newQuantity * item.Price } : item,
+      ),
     )
   }
 
   const calculateTotal = () => (cartItems?.reduce((total, item) => total + item.Subtotal, 0) || 0).toFixed(2)
 
-
   if (!isLoggedIn) {
     return (
-      <div className="cart-overlay-backdrop">
-        <div ref={overlayRef} className="cart-overlay">
-
-          <div className="cart-overlay-backdrop" onClick={onClose}>
-            <div className="cart-overlay" onClick={(e) => e.stopPropagation()}>
-              <div className="cart-header">
-                <div className="cart-title">
-                  <ShoppingBag size={18} />
-                  <h3>Tu Carrito</h3>
-                </div>
-                <button
-                  className="close-button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onClose()
-                  }}
-                  aria-label="Cerrar carrito"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-              <div className="empty-cart">
-                <h4>Tu carrito está vacío</h4>
-                <p>Inicia sesión o regístrate para agregar productos a tu carrito.</p>
-                <a href="/login" className="login-button">
-                  Iniciar Sesión
-                </a>
-                <a href="/register" className="register-link">
-                  ¿No tienes cuenta? Regístrate
-                </a>
-              </div>
+      <div className="cart-overlay-backdrop" onClick={onClose}>
+        <div ref={overlayRef} className="cart-overlay-sc" onClick={(e) => e.stopPropagation()}>
+          <div className="cart-header">
+            <div className="cart-title">
+              <ShoppingBag size={18} />
+              <h3>Tu Carrito</h3>
             </div>
+            <button
+              className="close-button"
+              onClick={(e) => {
+                e.stopPropagation()
+                onClose()
+              }}
+              aria-label="Cerrar carrito"
+            >
+              <X size={18} />
+            </button>
+          </div>
+          <div className="empty-cart">
+            <h4>Tu carrito está vacío</h4>
+            <p>Inicia sesión o regístrate para agregar productos a tu carrito.</p>
+            <a href="/login" className="login-button">
+              Iniciar Sesión
+            </a>
+            <a href="/register" className="register-link">
+              ¿No tienes cuenta? Regístrate
+            </a>
           </div>
         </div>
       </div>
-
     )
   }
 
-
   return (
-    <div className="cart-overlay-backdrop">
-      <div ref={overlayRef} className="cart-overlay">
+    <div className="cart-overlay-backdrop" onClick={onClose}>
+      <div ref={overlayRef} className="cart-overlay-sc" onClick={(e) => e.stopPropagation()}>
         <div className="cart-header">
           <div className="cart-title">
             <ShoppingBag size={18} />
@@ -193,17 +205,17 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
               </span>
             </div>
             <div className="cart-items">
-              {cartItems.map(item => (
+              {cartItems.map((item) => (
                 <div className="cart-item" key={item.CartItemId}>
                   <button
                     className="remove-item"
-                    onClick={e => confirmDelete(item.CartItemId, item.Producto, e)}
+                    onClick={(e) => confirmDelete(item.CartItemId, item.Producto, e)}
                     aria-label="Eliminar producto"
                   >
                     <Trash2 size={16} />
                   </button>
                   <div className="item-image">
-                    <img src={item.ImagenUrl} alt={item.Producto} />
+                    <img src={item.ImagenUrl || "/placeholder.svg"} alt={item.Producto} />
                   </div>
                   <div className="item-details">
                     <h4>{item.Producto}</h4>
@@ -211,7 +223,10 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
                     <div className="item-actions">
                       <div className="quantity-controls">
                         <button
-                          onClick={() => handleQuantityChange(item.CartItemId, item.Quantity - 1)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleQuantityChange(item.CartItemId, item.Quantity - 1, e)
+                          }}
                           disabled={item.Quantity <= 1}
                           aria-label="Disminuir cantidad"
                         >
@@ -219,7 +234,10 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
                         </button>
                         <span>{item.Quantity}</span>
                         <button
-                          onClick={() => handleQuantityChange(item.CartItemId, item.Quantity + 1)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleQuantityChange(item.CartItemId, item.Quantity + 1, e)
+                          }}
                           aria-label="Aumentar cantidad"
                         >
                           <Plus size={14} />
@@ -251,7 +269,7 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
             </div>
 
             {deleteConfirmation.isOpen && (
-              <div className="delete-confirmation" onClick={e => e.stopPropagation()}>
+              <div className="delete-confirmation" onClick={(e) => e.stopPropagation()}>
                 <div className="confirmation-content">
                   <div className="confirmation-icon">
                     <AlertCircle size={24} />
@@ -264,9 +282,7 @@ export default function CartOverlay({ onClose, clientId, isLoggedIn }: CartOverl
                     </button>
                     <button
                       className="confirm-button"
-                      onClick={() =>
-                        deleteConfirmation.itemId !== null && handleRemoveItem(deleteConfirmation.itemId)
-                      }
+                      onClick={() => deleteConfirmation.itemId !== null && handleRemoveItem(deleteConfirmation.itemId)}
                     >
                       Eliminar
                     </button>

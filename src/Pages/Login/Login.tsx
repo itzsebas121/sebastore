@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Aquí importamos el hook
 import './Login.css';
-     
+
 import config from "../../config";
 
 export default function Login() {
@@ -20,7 +20,7 @@ export default function Login() {
     setError("");
 
     try {
-    
+
       const response = await fetch(`${config.apiBaseUrl}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -41,7 +41,6 @@ export default function Login() {
 
       const payload = JSON.parse(atob(data.token.split('.')[1]));
       const tipoUsuario = payload.tipoUsuario;
-
       if (tipoUsuario === "Admin") {
         navigate("/admin", { replace: true });
       } else if (tipoUsuario === "Cliente") {

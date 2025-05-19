@@ -66,7 +66,6 @@ function NavbarCliente() {
     setCartOpen(false)
     setProfileOpen(false)
   }
-
   return (
     <>
       <div className="navbar">
@@ -83,6 +82,11 @@ function NavbarCliente() {
             <li>
               <a href="/products" onClick={handleLinkClick}>
                 Productos
+              </a>
+            </li>
+            <li>
+              <a href="/history" onClick={handleLinkClick}>
+                Historial
               </a>
             </li>
             <li>

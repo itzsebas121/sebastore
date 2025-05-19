@@ -213,20 +213,12 @@ END;
 CREATE PROCEDURE CrearUsuario
     @Correo NVARCHAR(100),
     @Contrasena NVARCHAR(100),
-    @TipoUsuario NVARCHAR(20),
-    @Nombre NVARCHAR(100) = NULL,
-    @Apellido NVARCHAR(100) = NULL,
+    @Nombre NVARCHAR(100),
+    @Apellido NVARCHAR(100),
     @Telefono NVARCHAR(20) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Verificamos que el tipo de usuario sea válido
-    IF @TipoUsuario NOT IN ('Admin', 'Cliente')
-    BEGIN
-        RAISERROR('Tipo de usuario no válido. Debe ser "Admin" o "Cliente".', 16, 1);
-        RETURN;
-    END
 
     -- Verificamos que no exista ya el correo
     IF EXISTS (SELECT 1 FROM Usuarios WHERE Correo = @Correo)
@@ -235,31 +227,29 @@ BEGIN
         RETURN;
     END
 
-    -- Insertar en Usuarios
+    -- Insertar en Usuarios con TipoUsuario fijo como 'Cliente'
     INSERT INTO Usuarios (Correo, ContrasenaHash, TipoUsuario)
     VALUES (
         @Correo,
         CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', @Contrasena), 2),
-        @TipoUsuario
+        'Cliente'
     );
 
     -- Obtener el ID generado
     DECLARE @NuevoUsuarioId INT = SCOPE_IDENTITY();
 
-    -- Si es Cliente, insertar en Clientes
-    IF @TipoUsuario = 'Cliente'
+    -- Validar que nombre y apellido no sean NULL (por seguridad)
+    IF @Nombre IS NULL OR @Apellido IS NULL
     BEGIN
-        IF @Nombre IS NULL OR @Apellido IS NULL
-        BEGIN
-            RAISERROR('Nombre y Apellido son obligatorios para usuarios tipo Cliente.', 16, 1);
-            RETURN;
-        END
-
-        INSERT INTO Clientes (UsuarioId, Nombre, Apellido, Telefono)
-        VALUES (@NuevoUsuarioId, @Nombre, @Apellido, @Telefono);
+        RAISERROR('Nombre y Apellido son obligatorios.', 16, 1);
+        RETURN;
     END
 
-    PRINT 'Usuario creado correctamente.';
+    -- Insertar en Clientes
+    INSERT INTO Clientes (UsuarioId, Nombre, Apellido, Telefono)
+    VALUES (@NuevoUsuarioId, @Nombre, @Apellido, @Telefono);
+
+    PRINT 'Usuario cliente creado correctamente.';
 END;
 
 
@@ -273,14 +263,15 @@ EXEC CrearUsuario
     @Telefono = '555-7890';
 
 
-CREATE PROCEDURE ValidarLogin
+CREATE OR ALTER PROCEDURE ValidarLogin
     @Correo NVARCHAR(100),
     @Contrasena NVARCHAR(100)
 AS
 BEGIN
-    SET NOCOUNT ON;
+    
 
     SELECT 
+		c.ClienteId as UsuarioId,
         c.Nombre,
         c.Apellido,
         u.TipoUsuario
@@ -288,6 +279,62 @@ BEGIN
     LEFT JOIN Clientes c ON u.UsuarioId = c.UsuarioId
     WHERE u.Correo = @Correo
       AND u.ContrasenaHash = CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', @Contrasena), 2);
+END;
+
+CREATE PROCEDURE ObtenerUsuarioPorClienteId
+    @ClienteId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        u.UsuarioId,
+        u.Correo,
+        u.TipoUsuario,
+        c.ClienteId,
+        c.Nombre,
+        c.Apellido,
+        c.Telefono
+    FROM Clientes c
+    INNER JOIN Usuarios u ON u.UsuarioId = c.UsuarioId
+    WHERE c.ClienteId = @ClienteId;
+END;
+
+CREATE OR ALTER PROCEDURE ObtenerHistorialVentasPorCliente
+    @ClienteId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        V.VentaId,
+        P.Nombre AS NombreProducto,
+        V.FechaVenta,
+        V.ValorTotal,
+        V.Estado
+    FROM Ventas V
+    INNER JOIN Productos P ON V.ProductoId = P.Id
+    WHERE V.ClienteId = @ClienteId
+    ORDER BY V.FechaVenta DESC;
+END;
+
+CREATE PROCEDURE ObtenerDetalleVentaPorId
+    @VentaId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        V.VentaId,
+        P.Nombre AS NombreProducto,
+        V.PrecioUnitario,
+        V.ValorTotal,
+        V.FechaVenta,
+        V.Estado,
+        V.DescripcionEntrega
+    FROM Ventas V
+    INNER JOIN Productos P ON V.ProductoId = P.Id
+    WHERE V.VentaId = @VentaId;
 END;
 
 

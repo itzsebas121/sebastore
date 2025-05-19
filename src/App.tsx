@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
+import LoadingImage from "./components/Loading/LaodingImage";
+import spinner from "./assets/sebastore-spinner.png"; // Ruta del logo/spinner
 
 const Login = lazy(() => import("./Pages/Login/Login"));
 const Registro = lazy(() => import("./Pages/Login/Registro"));
@@ -15,7 +17,7 @@ const Contact = lazy(() => import("./Pages/Client/Contact/Contact"));
 
 const NavbarCliente = lazy(() => import("./components/NavbarClient"));
 const NavbarAdmin = lazy(() => import("./components/NanvarAdmin"));
-
+const History = lazy(() => import("./Pages/Client/History/Historial"));
 const AdminSales = lazy(() => import("./Pages/Admin/AdminSales"));
 
 import "./Styles/global.css";
@@ -26,7 +28,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Cargando...</div>}>
+      <Suspense fallback={<LoadingImage imageSrc={spinner} text="Cargando SebaStore..." size={100} />}>
         {tipoUsuario === "Admin" ? <NavbarAdmin /> : <NavbarCliente />}
 
         <Routes>
@@ -35,6 +37,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/history" element={<History />} />
 
           <Route
             path="/checkout/:id"

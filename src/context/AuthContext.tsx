@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-// Definimos el tipo del contexto
 interface AuthContextType {
   token: string | null;
   tipoUsuario: string | null;
@@ -24,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const decodedToken = JSON.parse(atob(storedToken.split('.')[1]));
         setTipoUsuario(decodedToken.tipoUsuario);
       } catch {
-        logout(); // En caso de token inválido
+        logout();
       }
     }
     setIsAuthChecked(true);
