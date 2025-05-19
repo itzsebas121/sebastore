@@ -91,11 +91,10 @@
   }
 }
 
-/* Variante alternativa con efecto de pulso para el texto */
 .loading-text {
   position: relative;
   background: linear-gradient(to right, var(--color-text), var(--border));
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: textPulse 2s ease-in-out infinite;
 }

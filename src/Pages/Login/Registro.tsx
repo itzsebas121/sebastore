@@ -2,7 +2,7 @@ import type React from "react"
 import config from "../../config"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-
+import './Login.css'
 export default function Registro() {
   const [nombre, setNombre] = useState("")
   const [apellido, setApellido] = useState("")
@@ -127,7 +127,7 @@ export default function Registro() {
           <input
             id="telefono"
             type="tel"
-            placeholder="555-1234"
+            placeholder="0987654321"
             value={telefono}
             onChange={(e) => setTelefono(e.target.value)}
             required

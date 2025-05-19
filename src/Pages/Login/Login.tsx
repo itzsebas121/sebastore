@@ -105,7 +105,7 @@ export default function Login() {
       </form>
 
       <div className="auth-footer">
-        ¿No tienes una cuenta? <a href="/registro">Regístrate</a>
+        ¿No tienes una cuenta? <a href="/register">Regístrate</a>
       </div>
     </div>
   );
