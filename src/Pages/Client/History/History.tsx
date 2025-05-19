@@ -1,6 +1,5 @@
-"use client"
-
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../../context/AuthContext"
 import {
   Calendar,
@@ -28,7 +27,9 @@ interface Sale {
 }
 
 export default function History() {
-  const {  token } = useAuth()
+  const { token } = useAuth()
+  const navigate = useNavigate()
+
   const [sales, setSales] = useState<Sale[]>([])
   const [filteredSales, setFilteredSales] = useState<Sale[]>([])
   const [loading, setLoading] = useState(true)
@@ -42,8 +43,17 @@ export default function History() {
   const salesPerPage = 5
 
   useEffect(() => {
+    if (!token) {
+      const redirectTimer = setTimeout(() => {
+        navigate("/login", { replace: true })
+      }, 50500)
+      return () => clearTimeout(redirectTimer)
+    }
+  }, [token, navigate])
+
+  useEffect(() => {
     const fetchSalesHistory = async () => {
-      if ( !token) return
+      if (!token) return
 
       try {
         setLoading(true)
@@ -69,18 +79,13 @@ export default function History() {
     }
 
     fetchSalesHistory()
-  }, [ token])
+  }, [token])
 
   useEffect(() => {
-    // Aplicar filtros cuando cambie el estado activo o el término de búsqueda
     let result = [...sales]
-
-    // Filtrar por estado
     if (activeFilter !== "Todos") {
       result = result.filter((sale) => sale.Estado === activeFilter)
     }
-
-    // Filtrar por término de búsqueda
     if (searchTerm.trim() !== "") {
       const term = searchTerm.toLowerCase()
       result = result.filter(
@@ -90,9 +95,8 @@ export default function History() {
           formatDate(sale.FechaVenta).toLowerCase().includes(term),
       )
     }
-
     setFilteredSales(result)
-    setCurrentPage(1) // Resetear a la primera página cuando se aplican filtros
+    setCurrentPage(1)
   }, [activeFilter, searchTerm, sales])
 
   const formatDate = (dateString: string) => {
@@ -148,7 +152,6 @@ export default function History() {
     setSelectedSaleId(null)
   }
 
-  // Paginación
   const indexOfLastSale = currentPage * salesPerPage
   const indexOfFirstSale = indexOfLastSale - salesPerPage
   const currentSales = filteredSales.slice(indexOfFirstSale, indexOfLastSale)
@@ -160,17 +163,14 @@ export default function History() {
     }
   }
 
-  // Renderizar números de página
   const renderPageNumbers = () => {
     const pageNumbers = []
     const maxVisiblePages = 3
     let startPage = Math.max(1, currentPage - 1)
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
-
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1)
     }
-
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <button
@@ -182,8 +182,28 @@ export default function History() {
         </button>,
       )
     }
-
     return pageNumbers
+  }
+
+  // Mostrar mensaje si no hay token (antes del redirect)
+  if (!token) {
+    return (
+      <div className="history-container">
+        <div className="history-error">
+          <AlertTriangle size={40} />
+          <h3>No estás autenticado</h3>
+          <p>Para ver tu historial de compras necesitas iniciar sesión.</p>
+          <div className="history-buttons">
+            <a href="/login" className="shop-now-button">
+              Iniciar sesión
+            </a> 
+            <a href="/register" className="shop-now-button">
+              Registrarme
+            </a>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {
@@ -242,30 +262,15 @@ export default function History() {
             <span>Filtrar por:</span>
           </div>
           <div className="filter-buttons">
-            <button
-              className={`filter-button ${activeFilter === "Todos" ? "active" : ""}`}
-              onClick={() => setActiveFilter("Todos")}
-            >
-              Todos
-            </button>
-            <button
-              className={`filter-button ${activeFilter === "Pendiente" ? "active" : ""}`}
-              onClick={() => setActiveFilter("Pendiente")}
-            >
-              Pendientes
-            </button>
-            <button
-              className={`filter-button ${activeFilter === "Completada" ? "active" : ""}`}
-              onClick={() => setActiveFilter("Completada")}
-            >
-              Completadas
-            </button>
-            <button
-              className={`filter-button ${activeFilter === "Cancelada" ? "active" : ""}`}
-              onClick={() => setActiveFilter("Cancelada")}
-            >
-              Canceladas
-            </button>
+            {["Todos", "Pendiente", "Completada", "Cancelada"].map((estado) => (
+              <button
+                key={estado}
+                className={`filter-button ${activeFilter === estado ? "active" : ""}`}
+                onClick={() => setActiveFilter(estado)}
+              >
+                {estado}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -347,9 +352,7 @@ export default function History() {
               >
                 <ChevronLeft size={18} />
               </button>
-
               {renderPageNumbers()}
-
               <button
                 className="pagination-arrow"
                 onClick={() => paginate(currentPage + 1)}

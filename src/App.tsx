@@ -17,7 +17,7 @@ const Contact = lazy(() => import("./Pages/Client/Contact/Contact"));
 
 const NavbarCliente = lazy(() => import("./components/NavbarClient"));
 const NavbarAdmin = lazy(() => import("./components/NanvarAdmin"));
-const History = lazy(() => import("./Pages/Client/History/Historial"));
+const History = lazy(() => import("./Pages/Client/History/History"));
 const AdminSales = lazy(() => import("./Pages/Admin/AdminSales"));
 
 import "./Styles/global.css";
