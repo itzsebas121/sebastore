@@ -1,0 +1,154 @@
+README - Uso de Procedimientos Almacenados (Stored Procedures)
+Tabla de Contenidos
+Introducción
+
+Introducción
+Este documento describe cómo usar los procedimientos almacenados GetCategories y GetProducts para consultar categorías y productos de la base de datos.
+
+Los procedimientos están diseñados para facilitar la paginación y el filtrado eficiente de productos, permitiendo manejar grandes volúmenes de datos sin afectar el rendimiento.
+
+Procedimientos disponibles
+Procedimiento	Descripción
+GetCategories	Retorna todas las categorías ordenadas por nombre.
+GetProducts	Retorna productos filtrados, paginados y con conteo total.
+
+Ejecutar GetCategories
+sql
+Copiar
+Editar
+EXEC GetCategories;
+Retorna un listado con todas las categorías disponibles.
+
+Útil para mostrar filtros o menús en la interfaz de usuario.
+
+Ejecutar GetProducts
+sql
+Copiar
+Editar
+EXEC GetProducts
+    @NameFilter = NULL,
+    @CategoryId = NULL,
+    @MinPrice = NULL,
+    @MaxPrice = NULL,
+    @PageNumber = 1,
+    @PageSize = 20;
+Retorna dos resultados:
+
+TotalCount: número total de productos que cumplen los filtros.
+
+Lista paginada de productos según la página y tamaño especificado.
+
+Parámetros de GetProducts
+Parámetro	Tipo	Descripción	Valor por defecto
+@NameFilter	NVARCHAR(100)	Filtro parcial por nombre de producto (uso de LIKE %...%)	NULL
+@CategoryId	INT	Filtra productos por categoría específica	NULL
+@MinPrice	DECIMAL(10, 2)	Precio mínimo del producto	NULL
+@MaxPrice	DECIMAL(10, 2)	Precio máximo del producto	NULL
+@PageNumber	INT	Número de página para paginación (comienza en 1)	1
+@PageSize	INT	Cantidad de productos a devolver por página	20
+
+Ejemplos de uso
+1. Obtener todas las categorías
+sql
+Copiar
+Editar
+EXEC GetCategories;
+2. Obtener los primeros 20 productos sin filtros
+sql
+Copiar
+Editar
+EXEC GetProducts;
+3. Buscar productos que contengan “netflix”
+sql
+Copiar
+Editar
+EXEC GetProducts @NameFilter = 'netflix';
+4. Obtener productos de categoría 1 (Streaming), página 2, 10 por página
+sql
+Copiar
+Editar
+EXEC GetProducts @CategoryId = 1, @PageNumber = 2, @PageSize = 10;
+5. Filtrar por rango de precios entre 2.00 y 5.00
+sql
+Copiar
+Editar
+EXEC GetProducts @MinPrice = 2.00, @MaxPrice = 5.00;
+6. Aplicar todos los filtros juntos
+sql
+Copiar
+Editar
+EXEC GetProducts 
+    @NameFilter = 'netflix',
+    @CategoryId = 1,
+    @MinPrice = 2.00,
+    @MaxPrice = 6.00,
+    @PageNumber = 1,
+    @PageSize = 20;
+Notas importantes
+Los parámetros son opcionales; los que no se proporcionen o sean NULL no afectarán el filtro.
+
+La paginación permite manejar grandes cantidades de productos eficientemente.
+
+Se recomienda manejar la respuesta de dos conjuntos de resultados (TotalCount y lista de productos) en la capa de aplicación para mostrar total de páginas y resultados actuales.
+
+
+
+
+
+
+EXEC CreateCustomer
+    @Email = 'sebastipan@example.com',
+    @Password = 'MiPass123!',
+    @FirstName = 'Sebas',
+    @LastName = 'Tipan',
+    @Phone = '0998765432';
+📥 Parámetros requeridos:
+Parámetro	Tipo	Descripción
+@Email	NVARCHAR(100)	Email del cliente (debe ser válido y único).
+@Password	NVARCHAR(100)	Contraseña en texto plano (se encripta).
+@FirstName	NVARCHAR(100)	Nombres del cliente (solo letras/espacios).
+@LastName	NVARCHAR(100)	Apellidos del cliente (solo letras/espacios).
+@Phone	NVARCHAR(20)	Teléfono válido de Ecuador.
+
+📤 Salidas:
+✔️ Éxito:
+sql
+Copiar
+Editar
+SELECT 'Customer successfully created' AS message, CustomerId;
+❌ Posibles errores:
+sql
+
+SELECT 'Invalid characters in FirstName' AS error;
+SELECT 'Invalid characters in LastName' AS error;
+SELECT 'Invalid email format' AS error;
+SELECT 'Email already registered' AS error;
+SELECT 'Invalid Ecuadorian phone number' AS error;
+SELECT 'Error técnico interno (mensaje del sistema)' AS error;
+
+
+
+
+EXEC LoginUser
+    @Email = 'admin@example.com',
+    @Password = 'Admin123!';
+
+Este procedimiento permite iniciar sesión validando las credenciales de un usuario. Si las credenciales son correctas, devuelve el UserId, el Role, y dependiendo del rol, el AdminId o el CustomerId.
+
+📥 Parámetros de entrada:
+Nombre	Tipo de dato	Descripción
+@Email	NVARCHAR(100)	Correo electrónico del usuario.
+@Password	NVARCHAR(100)	Contraseña en texto plano.
+
+❌ Posibles salidas de error (como SELECT):
+Campo	Valor	Descripción
+error	"Email not registered"	El correo no existe en la base de datos.
+error	"Incorrect credentials"	Contraseña incorrecta.
+error	ERROR_MESSAGE() (de SQL Server)	Error inesperado en la ejecución.
+
+✅ Salida en caso de éxito (como SELECT):
+Campo	Tipo	Descripción
+UserId	INT	Identificador único del usuario.
+Role	NVARCHAR	Rol del usuario (Admin o Customer).
+AdminId	INT	Solo si el usuario es admin, caso contrario NULL.
+CustomerId	INT	Solo si el usuario es cliente, caso contrario NULL.

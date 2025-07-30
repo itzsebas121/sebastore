@@ -1,5 +1,5 @@
-const sql = require("mssql");
-require("dotenv").config();
+const sql = require('mssql');
+require('dotenv').config();
 
 const config = {
   user: process.env.DB_USER,
@@ -15,11 +15,11 @@ const config = {
 
 const poolPromise = sql.connect(config)
   .then(pool => {
-    console.log("✅ Conectado a SQL Server");
+    console.log('✅ Conectado a SQL Server');
     return pool;
   })
   .catch(err => {
-    console.error("❌ Error de conexión a DB:", err);
+    console.error('❌ Error de conexión a DB:', err);
     throw err;
   });
 
