@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-// Importar rutas
 app.use('/users', require('./routes/userRoutes'));
 app.use('/customers', require('./routes/customerRoutes'));
 app.use('/admins', require('./routes/adminRoutes'));

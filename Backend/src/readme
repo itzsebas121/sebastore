@@ -1,0 +1,57 @@
+
+# GET /products
+Consulta productos con filtros y paginación.
+## Parámetros Query (opcionales)
+| Parámetro   | Tipo           | Descripción                                         | Valor por defecto |
+|-------------|----------------|-----------------------------------------------------|-------------------|
+| NameFilter  | string         | Búsqueda parcial por nombre (LIKE %...%)            | null              |
+| CategoryId  | int            | Filtrar por categoría                               | null              |
+| MinPrice    | decimal(10,2)  | Precio mínimo                                      | null              |
+| MaxPrice    | decimal(10,2)  | Precio máximo                                      | null              |
+| PageNumber  | int            | Número de página (desde 1)                          | 1                 |
+| PageSize    | int            | Cantidad de productos por página                    | 20                |
+
+### Ejemplo de petición
+
+```
+GET /products?NameFilter=netflix&CategoryId=1&MinPrice=2&MaxPrice=6&PageNumber=1&PageSize=20
+```
+
+## Respuesta exitosa (HTTP 200)
+
+```json
+{
+  "totalCount": 157,
+  "products": [
+    {
+      "ProductId": 1001,
+      "Name": "Netflix Premium 1 Profile",
+      "Description": "...",
+      "Price": 5.00,
+      "CategoryId": 1,
+      "ImageUrl": "https://..."
+    }
+    // ...más productos según PageSize
+  ]
+}
+```
+
+## Cálculo de páginas
+
+```js
+totalPages = Math.ceil(totalCount / PageSize)
+```
+
+## Errores posibles
+
+| Código HTTP | Cuerpo JSON                        | Descripción                                 |
+|-------------|------------------------------------|---------------------------------------------|
+| 500         | { "error": "Internal server error" } | Error inesperado del servidor o base de datos |
+
+## Notas para el frontend
+
+- Todos los filtros son opcionales.
+- La paginación y los filtros se envían como query params.
+- `totalCount` permite calcular el número total de páginas.
+- `products` contiene solo los productos de la página solicitada.
+- En caso de error, mostrar el mensaje recibido al usuario.
