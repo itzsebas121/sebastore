@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { ShoppingCart, Eye, Star } from "lucide-react"
 import type { Product } from "../../../Types/Product"
@@ -22,21 +20,13 @@ export default function ProductCard({ product, onView }: ProductCardProps) {
   }
 
   // Simulate different trust scores and discounts for demo
-  const trustScore = Math.floor(Math.random() * 30) + 70 // 70-100
   const originalPrice = product.price * (1 + Math.random() * 0.5) // Add 0-50% markup
   const discount = originalPrice - product.price
   const sellerName = `Seller ${Math.floor(Math.random() * 1000)}`
   const rating = 3.5 + Math.random() * 1.5 // 3.5-5.0
   const reviewCount = Math.floor(Math.random() * 2000) + 100
 
-  const getTrustScoreColor = (score: number) => {
-    if (score >= 90) return { color: "#10b981", label: "Excellent" }
-    if (score >= 80) return { color: "#3b82f6", label: "Very Good" }
-    if (score >= 70) return { color: "#f59e0b", label: "Good" }
-    return { color: "#ef4444", label: "Fair" }
-  }
 
-  const trustData = getTrustScoreColor(trustScore)
 
   return (
     <div className="product-card">
