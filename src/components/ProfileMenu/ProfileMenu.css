@@ -1,0 +1,132 @@
+.profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--color-secondary);
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  color: var(--color-text);
+}
+
+.profile-info h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.profile-info p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text);
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+.profile-options {
+  padding: 0.5rem 0;
+}
+
+.profile-option {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.profile-option:hover {
+  background-color: rgba(159, 84, 234, 0.1);
+}
+
+.profile-option svg {
+  margin-right: 0.75rem;
+  color: var(--color-text);
+}
+
+.logout {
+  color: var(--color-tertiary);
+  border-top: 1px solid var(--border);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.logout svg {
+  color: var(--color-tertiary);
+}
+
+.login-prompt {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.login-prompt p {
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.login-button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.register-link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+  color: var(--border);
+}
+@media  (max-width: 768px) {
+  .profile-menu{
+    right: -90px;
+  }
+  .cart-overlay{
+    right: -120px;
+  }
+}

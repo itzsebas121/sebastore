@@ -1,5 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors({
+  origin: '*', // Permite todos los orígenes
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'] // Headers permitidos
+}));
+
 app.use(express.json());
 app.use('/users', require('./routes/userRoutes'));
 app.use('/customers', require('./routes/customerRoutes'));
