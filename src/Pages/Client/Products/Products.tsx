@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState, lazy, Suspense } from "react"
 import { Filter } from "lucide-react"
 import { getProductsService } from "../../../Api/services/ProductService"
@@ -9,14 +7,9 @@ import { adaptarCategoria } from "../../../Adapters/CategoryAdapter"
 import type { Product } from "../../../Types/Product"
 import type { Category } from "../../../Types/Category"
 import Filters from "./Filters"
-import LoadingSpinner from "../../../components/UI/LoadingSpinner"
 import ProductOverlay from "./ProductOverlay"
+import LoadingImage from "../../../components/Loading/LaodingImage"
 import "./Products.css"
-
-interface PaginatedData {
-  totalCount: number
-  products: Product[]
-}
 
 const ProductGrid = lazy(() => import("./ProductGrid"))
 
@@ -140,9 +133,12 @@ export default function Products() {
 
   if (loading) {
     return (
-      <div className="products-loading-container">
-        <LoadingSpinner />
-      </div>
+      <LoadingImage
+        text="Cargando productos increíbles..."
+        imageSrc="/logo.png"
+        size={120}
+        fullScreen={true}
+      />
     )
   }
 
@@ -201,7 +197,7 @@ export default function Products() {
             </div>
           )}
 
-          <Suspense fallback={<LoadingSpinner />}>
+          <Suspense fallback={<LoadingImage imageSrc="/logo.png" />}>
             <ProductGrid
               products={products}
               loading={productsLoading}

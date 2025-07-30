@@ -51,12 +51,8 @@ export default function ProductCard({ product, onView }: ProductCardProps) {
         <div className="product-card-overlay">
           <button onClick={handleView} className="product-card-overlay-button product-card-view-button">
             <Eye className="product-card-overlay-icon" />
-            Ver
           </button>
-          <button onClick={handleAddToCart} className="product-card-overlay-button product-card-cart-button">
-            <ShoppingCart className="product-card-overlay-icon" />
-            Carrito
-          </button>
+          
         </div>
       </div>
 

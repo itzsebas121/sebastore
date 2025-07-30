@@ -1,9 +1,11 @@
 "use client"
 
-import { ChevronLeft, ChevronRight, Package } from "lucide-react"
+import { Package } from "lucide-react"
 import type { Product } from "../../../Types/Product"
 import ProductCard from "./ProductCard"
 import "./ProductGrid.css"
+import Pagination from "./Pagination"
+import LoadingImage from "../../../components/Loading/LaodingImage"
 
 interface ProductGridProps {
   products: Product[]
@@ -24,88 +26,14 @@ export default function ProductGrid({
   totalCount,
   onProductView,
 }: ProductGridProps) {
-  const renderPagination = () => {
-    if (totalPages <= 1) return null
-
-    const pages = []
-    const maxVisiblePages = 5
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1)
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i)
-    }
-
-    return (
-      <div className="product-grid-pagination">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1 || loading}
-          className="product-grid-pagination-button product-grid-pagination-prev"
-        >
-          <ChevronLeft className="product-grid-pagination-icon" />
-          Anterior
-        </button>
-
-        <div className="product-grid-pagination-numbers">
-          {startPage > 1 && (
-            <>
-              <button onClick={() => onPageChange(1)} className="product-grid-pagination-number" disabled={loading}>
-                1
-              </button>
-              {startPage > 2 && <span className="product-grid-pagination-ellipsis">...</span>}
-            </>
-          )}
-
-          {pages.map((page) => (
-            <button
-              key={page}
-              onClick={() => onPageChange(page)}
-              className={`product-grid-pagination-number ${
-                page === currentPage ? "product-grid-pagination-number-active" : ""
-              }`}
-              disabled={loading}
-            >
-              {page}
-            </button>
-          ))}
-
-          {endPage < totalPages && (
-            <>
-              {endPage < totalPages - 1 && <span className="product-grid-pagination-ellipsis">...</span>}
-              <button
-                onClick={() => onPageChange(totalPages)}
-                className="product-grid-pagination-number"
-                disabled={loading}
-              >
-                {totalPages}
-              </button>
-            </>
-          )}
-        </div>
-
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages || loading}
-          className="product-grid-pagination-button product-grid-pagination-next"
-        >
-          Siguiente
-          <ChevronRight className="product-grid-pagination-icon" />
-        </button>
-      </div>
-    )
-  }
-
   if (loading) {
     return (
-      <div className="product-grid-loading">
-        <div className="product-grid-loading-spinner"></div>
-        <p>Cargando productos increíbles...</p>
-      </div>
+      <LoadingImage
+        text="Cargando..."
+        imageSrc="/logo.png"
+        size={80}
+        fullScreen={false}
+      />
     )
   }
 
@@ -134,7 +62,7 @@ export default function ProductGrid({
         ))}
       </div>
 
-      {renderPagination()}
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} disabled={loading} />
     </div>
   )
 }
