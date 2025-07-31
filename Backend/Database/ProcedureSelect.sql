@@ -120,3 +120,33 @@ BEGIN
         SELECT 'Unknown role' AS error;
     END
 END;
+
+CREATE or alter PROCEDURE GetCartByCustomerId
+    @CustomerId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Verifica que exista un carrito activo
+    IF NOT EXISTS (
+        SELECT 1 FROM Carts WHERE CustomerId = @CustomerId AND IsActive = 1
+    )
+    BEGIN
+        SELECT 'No existe un carrito activo para este cliente.' AS error;
+        RETURN;
+    END
+
+    -- Devuelve solo la lista de productos del carrito
+    SELECT 
+        p.ProductId,
+        p.Name AS ProductName,
+        p.Description,
+        p.ImageUrl,
+        ci.UnitPrice,
+        ci.Quantity,
+        (ci.UnitPrice * ci.Quantity) AS Subtotal
+    FROM CartItems ci
+    INNER JOIN Carts c ON ci.CartId = c.CartId
+    INNER JOIN Products p ON ci.ProductId = p.ProductId
+    WHERE c.CustomerId = @CustomerId AND c.IsActive = 1;
+END

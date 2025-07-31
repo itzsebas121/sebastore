@@ -15,7 +15,6 @@ app.use('/categories', require('./routes/categoryRoutes'));
 app.use('/products', require('./routes/productRoutes'));
 app.use('/sales', require('./routes/saleRoutes'));
 app.use('/carts', require('./routes/cartRoutes'));
-app.use('/cart-items', require('./routes/cartItemRoutes'));
 app.use('/sale-status-history', require('./routes/saleStatusHistoryRoutes'));
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

@@ -74,3 +74,68 @@ BEGIN
     END CATCH
 END;
 GO
+
+CREATE PROCEDURE AddProductToCart
+    @CustomerId INT,
+    @ProductId INT,
+    @Quantity INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @Quantity <= 0
+    BEGIN
+        SELECT 'La cantidad debe ser mayor a cero.' AS error;
+        RETURN;
+    END
+
+    DECLARE @CartId INT;
+    DECLARE @UnitPrice DECIMAL(10, 2);
+
+    -- Validar existencia de producto
+    SELECT @UnitPrice = Price
+    FROM Products
+    WHERE ProductId = @ProductId;
+
+    IF @UnitPrice IS NULL
+    BEGIN
+        SELECT 'Producto no encontrado.' AS error;
+        RETURN;
+    END
+
+    -- Buscar carrito activo
+    SELECT @CartId = CartId
+    FROM Carts
+    WHERE CustomerId = @CustomerId AND IsActive = 1;
+
+    -- Crear nuevo carrito si no existe
+    IF @CartId IS NULL
+    BEGIN
+        INSERT INTO Carts (CustomerId)
+        VALUES (@CustomerId);
+
+        SET @CartId = SCOPE_IDENTITY();
+    END
+
+    -- Verificar si ya está el producto
+    IF EXISTS (
+        SELECT 1 FROM CartItems
+        WHERE CartId = @CartId AND ProductId = @ProductId
+    )
+    BEGIN
+        UPDATE CartItems
+        SET Quantity = Quantity + @Quantity,
+            UpdatedAt = GETDATE()
+        WHERE CartId = @CartId AND ProductId = @ProductId;
+
+        SELECT 'Producto actualizado en el carrito existente.' AS message;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO CartItems (CartId, ProductId, Quantity, UnitPrice)
+        VALUES (@CartId, @ProductId, @Quantity, @UnitPrice);
+
+        SELECT 'Producto agregado al carrito.' AS message;
+    END
+END
+GO

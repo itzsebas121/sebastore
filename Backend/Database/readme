@@ -152,3 +152,87 @@ UserId	INT	Identificador único del usuario.
 Role	NVARCHAR	Rol del usuario (Admin o Customer).
 AdminId	INT	Solo si el usuario es admin, caso contrario NULL.
 CustomerId	INT	Solo si el usuario es cliente, caso contrario NULL.
+
+
+📦 AddProductToCart
+✅ Propósito
+Agrega un producto al carrito activo del cliente. Si el cliente no tiene un carrito activo, se crea uno nuevo.
+
+🔧 Parámetros
+Parámetro	Tipo	Descripción
+@CustomerId	INT	ID del cliente (CustomerId)
+@ProductId	INT	ID del producto a agregar
+@Quantity	INT	Cantidad del producto a agregar (> 0)
+
+📤 Salidas
+Éxito:
+
+Campo	Valor
+message	'Producto actualizado en el carrito existente.'
+'Producto agregado al carrito.'
+
+Error:
+
+Campo	Valor
+error	'La cantidad debe ser mayor a cero.'
+'Producto no encontrado.'
+
+🧪 Ejemplo de uso
+sql
+Copiar
+Editar
+EXEC AddProductToCart @CustomerId = 2, @ProductId = 5, @Quantity = 1;
+🛠 UpdateCartItem
+✅ Propósito
+Actualiza la cantidad de un producto existente en el carrito activo del cliente.
+
+🔧 Parámetros
+Parámetro	Tipo	Descripción
+@CustomerId	INT	ID del cliente (CustomerId)
+@ProductId	INT	ID del producto a actualizar
+@Quantity	INT	Nueva cantidad (> 0)
+
+📤 Salidas
+Éxito:
+
+Campo	Valor
+message	'Cantidad del producto actualizada correctamente.'
+
+Error:
+
+Campo	Valor
+error	'La cantidad debe ser mayor a cero.'
+'No se encontró un carrito activo para este cliente.'
+'El producto no se encuentra en el carrito.'
+
+🧪 Ejemplo de uso
+sql
+Copiar
+Editar
+EXEC UpdateCartItem @CustomerId = 2, @ProductId = 5, @Quantity = 3;
+❌ RemoveProductFromCart
+✅ Propósito
+Elimina un producto específico del carrito activo del cliente.
+
+🔧 Parámetros
+Parámetro	Tipo	Descripción
+@CustomerId	INT	ID del cliente (CustomerId)
+@ProductId	INT	ID del producto a eliminar del carrito
+
+📤 Salidas
+Éxito:
+
+Campo	Valor
+message	'Producto eliminado del carrito correctamente.'
+
+Error:
+
+Campo	Valor
+error	'No se encontró un carrito activo para este cliente.'
+'El producto no se encuentra en el carrito.'
+
+🧪 Ejemplo de uso
+sql
+Copiar
+Editar
+EXEC RemoveProductFromCart @CustomerId = 2, @ProductId = 5;
