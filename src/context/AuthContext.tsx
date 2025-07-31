@@ -1,17 +1,14 @@
-"use client"
-
 import type React from "react"
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { jwtDecode } from "jwt-decode"
 
-// Tipos
 interface User {
   id: string
   nombre: string
   apellido: string
   email: string
   telefono?: string
-  tipoUsuario: "Admin" | "Cliente"
+  tipoUsuario: "Admin" | "Customer"
   [key: string]: any
 }
 
@@ -144,7 +141,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Función para verificar si es cliente
   const isClient = (): boolean => {
-    return user?.tipoUsuario === "Cliente"
+    return user?.tipoUsuario === "Customer"
   }
 
   // Verificar autenticación

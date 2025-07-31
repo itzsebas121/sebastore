@@ -24,12 +24,12 @@ import "./Styles/global.css";
 import "./Styles/var.css";
 
 function App() {
-  const { tipoUsuario } = useAuth();
+  const { user } = useAuth();
 
   return (
     <BrowserRouter>
       <Suspense fallback={<LoadingImage imageSrc={spinner} text="Cargando SebaStore..." size={100} />}>
-        {tipoUsuario === "Admin" ? <NavbarAdmin /> : <NavbarCliente />}
+        {user?.tipoUsuario === "Admin" ? <NavbarAdmin /> : <NavbarCliente />}
 
         <Routes>
           <Route path="/" element={<Home />} />
