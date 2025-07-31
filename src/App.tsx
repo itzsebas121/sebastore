@@ -6,7 +6,7 @@ import LoadingImage from "./components/Loading/LaodingImage";
 import spinner from "./assets/sebastore-spinner.png"; // Ruta del logo/spinner
 
 const Login = lazy(() => import("./Pages/Login/Login"));
-const Registro = lazy(() => import("./Pages/Login/Registro"));
+const Registro = lazy(() => import("./Pages/Login/Register"));
 const AdminDashboard = lazy(() => import("./Pages/Admin/AdminDashboard"));
 const ClienteDashboard = lazy(() => import("./Pages/Client/ClientDashboard"));
 

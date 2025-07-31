@@ -34,7 +34,6 @@ module.exports = {
         const result = await request.execute('LoginUser');
 
         const record = result.recordset[0];
-
         if (record?.error) {
             throw new Error(record.error);
         }

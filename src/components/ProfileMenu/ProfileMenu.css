@@ -1,132 +1,237 @@
 .profile-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 10px);
   right: 0;
-  width: 280px;
-  background-color: var(--background);
+  background: var(--color-secondary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  min-width: 280px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  animation: slideDown 0.3s ease-out;
 }
 
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header del perfil */
 .profile-header {
+  padding: 1.5rem;
   display: flex;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  background-color: var(--color-secondary);
+  gap: 1rem;
+  background: linear-gradient(135deg, var(--color-secondary-hover), var(--color-secondary));
+  border-radius: 12px 12px 0 0;
 }
 
 .profile-avatar {
-  width: 40px;
-  height: 40px;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--color-primary), var(--border));
   border-radius: 50%;
-  background-color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;
   color: var(--color-text);
+  box-shadow: 0 4px 15px rgba(85, 57, 170, 0.3);
+}
+
+.admin-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  background: var(--color-tertiary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--color-text);
+  border: 2px solid var(--color-secondary);
 }
 
 .profile-info h4 {
   margin: 0;
   color: var(--color-text);
   font-size: 1rem;
+  font-weight: 600;
 }
 
 .profile-info p {
-  margin: 0.25rem 0 0;
+  margin: 0.25rem 0;
   color: var(--color-text);
   opacity: 0.8;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
+.user-type {
+  display: inline-block;
+  background: rgba(159, 84, 234, 0.2);
+  color: var(--border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+
+/* Divisor */
+.profile-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 1rem;
+}
+
+/* Opciones del perfil */
 .profile-options {
-  padding: 0.5rem 0;
+  padding: 1rem;
 }
 
 .profile-option {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  width: 100%;
   padding: 0.75rem 1rem;
+  background: none;
+  border: none;
   color: var(--color-text);
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  border-radius: 8px;
   cursor: pointer;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .profile-option:hover {
-  background-color: rgba(159, 84, 234, 0.1);
+  background: rgba(159, 84, 234, 0.1);
+  color: var(--border);
+  transform: translateX(4px);
 }
 
-.profile-option svg {
-  margin-right: 0.75rem;
-  color: var(--color-text);
+.profile-option:last-child {
+  margin-bottom: 0;
+}
+
+.admin-option {
+  background: rgba(159, 84, 234, 0.15);
+  border: 1px solid var(--border);
+}
+
+.admin-option:hover {
+  background: rgba(159, 84, 234, 0.25);
 }
 
 .logout {
-  color: var(--color-tertiary);
-  border-top: 1px solid var(--border);
+  color: var(--color-tertiary) !important;
   margin-top: 0.5rem;
-  padding-top: 0.75rem;
 }
 
-.logout svg {
-  color: var(--color-tertiary);
+.logout:hover {
+  background: rgba(203, 3, 3, 0.1) !important;
+  color: var(--color-tertiary-hover) !important;
 }
 
+/* Prompt de login */
 .login-prompt {
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   text-align: center;
+}
+
+.login-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--color-primary), var(--border));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: var(--color-text);
+}
+
+.login-prompt h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .login-prompt p {
-  margin: 0 0 1rem;
+  margin: 0 0 1.5rem 0;
   color: var(--color-text);
+  opacity: 0.8;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .login-button {
-  display: block;
-  width: 100%;
-  padding: 0.75rem;
-  background-color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   color: var(--color-text);
-  border: none;
-  border-radius: 4px;
-  text-align: center;
   text-decoration: none;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  transition: background-color 0.3s ease;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(85, 57, 170, 0.3);
 }
 
 .login-button:hover {
-  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(85, 57, 170, 0.4);
 }
 
 .register-link {
-  color: var(--color-text);
+  color: var(--border);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .register-link:hover {
+  color: var(--color-text);
   text-decoration: underline;
-  color: var(--border);
 }
-@media  (max-width: 768px) {
-  .profile-menu{
-    right: -90px;
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-menu {
+    min-width: 260px;
+    right: -10px;
   }
-  .cart-overlay{
-    right: -120px;
+
+  .profile-header {
+    padding: 1.25rem;
+  }
+
+  .profile-options {
+    padding: 0.75rem;
+  }
+
+  .login-prompt {
+    padding: 1.5rem 1.25rem;
   }
 }

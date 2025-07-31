@@ -6,7 +6,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'] // Headers permitidos
 }));
-
 app.use(express.json());
 app.use('/users', require('./routes/userRoutes'));
 app.use('/customers', require('./routes/customerRoutes'));

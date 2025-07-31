@@ -1,27 +1,80 @@
+/* Variables ya definidas */
+:root {
+  --color-primary: #5539aa;
+  --color-primary-hover: #422f8f;
+  --color-secondary: #110220;
+  --color-secondary-hover: #260744;
+  --background: #3d4157;
+  --border: #9f54ea;
+  --color-text: #f5f5f5;
+  --color-tertiary: #cb0303;
+  --color-tertiary-hover: #ad0f0f;
+  --color-disabled: #6c5e75;
+}
+
+/* Navbar principal - Diseño limpio y espaciado */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 2rem;
+  padding: 1rem 2rem;
   background-color: var(--color-secondary);
-  position: relative;
-  z-index: 100;
-  border-bottom: 2px solid var(--border);
-}
-.navbar{
   position: sticky;
   top: 0;
-}
-.logo-nav a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-text);
-  text-decoration: none;
+  z-index: 100;
+  border-bottom: 2px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Logo mejorado */
+.logo-nav a {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  transition: all 0.3s ease;
+}
+
+.logo-nav a:hover {
+  color: var(--border);
+  transform: translateY(-1px);
+}
+
+/* Loading state */
+.navbar-loading {
+  color: var(--color-text);
+  opacity: 0.7;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(159, 84, 234, 0.3);
+  border-top: 2px solid var(--border);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Navegación principal */
 .nav-list {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .nav-list ul {
@@ -29,70 +82,222 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  gap: 0.5rem;
 }
 
 .nav-list li {
-  margin: 0 1rem;
+  position: relative;
 }
 
 .nav-list a {
   color: var(--color-text);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s ease;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.nav-list a::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--border);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-list a:hover::before {
+  width: 80%;
 }
 
 .nav-list a:hover {
   color: var(--border);
+  background-color: rgba(159, 84, 234, 0.1);
+  transform: translateY(-2px);
 }
 
+.admin-link {
+  background-color: rgba(203, 3, 3, 0.1) !important;
+  border: 1px solid rgba(203, 3, 3, 0.3);
+  color: var(--color-tertiary) !important;
+}
+
+.admin-link:hover {
+  background-color: rgba(203, 3, 3, 0.2) !important;
+  border-color: var(--color-tertiary);
+}
+
+/* Botones de navegación */
 .buttons-nav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .icons-nav {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .icon-container {
   position: relative;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
+
 
 .icon-nav {
   color: var(--color-text);
   width: 24px;
   height: 24px;
-  cursor: pointer;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.icon-nav:hover {
+.icon-container:hover .icon-nav {
+  color: var(--border);
+  transform: scale(1.1);
+}
+
+.icon-label {
+  font-size: 0.75rem;
+  color: var(--color-text);
+  opacity: 0.8;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.icon-container:hover .icon-label {
+  opacity: 1;
   color: var(--border);
 }
 
+/* Botones principales */
 .button-global {
-  background-color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   color: var(--color-text);
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(85, 57, 170, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .button-global:hover {
-  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(85, 57, 170, 0.4);
 }
 
+.button-secondary {
+  background-color: rgba(159, 84, 234, 0.1);
+  color: var(--color-text);
+  border: 1px solid rgba(159, 84, 234, 0.3);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button-secondary:hover {
+  background-color: rgba(159, 84, 234, 0.2);
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+.button-tertiary {
+  background: linear-gradient(135deg, var(--color-tertiary), var(--color-tertiary-hover));
+  color: var(--color-text);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button-tertiary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(203, 3, 3, 0.3);
+}
+
+/* Información del usuario */
+.user-info-desktop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(159, 84, 234, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(159, 84, 234, 0.2);
+}
+
+.user-greeting {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Móvil */
 .btn-mobile {
   display: none;
 }
 
+.mobile-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: rgba(159, 84, 234, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(159, 84, 234, 0.3);
+  margin-top: 1rem;
+}
+
+.mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-menu {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Hamburger */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -100,6 +305,7 @@
   width: 30px;
   height: 21px;
   cursor: pointer;
+  z-index: 101;
 }
 
 .hamburger div {
@@ -107,37 +313,61 @@
   height: 3px;
   background-color: var(--color-text);
   border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
+.hamburger:hover div {
+  background-color: var(--border);
+}
+
+/* Overlay */
 .overlay-navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 90;
   display: none;
+  backdrop-filter: blur(4px);
 }
 
 .overlay-navbar.show {
   display: block;
+  animation: fadeIn 0.3s ease;
 }
 
-/* Responsive styles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
+  .navbar {
+    padding: 1rem 1.5rem;
+  }
+
   .nav-list {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 70%;
+    width: 75%;
+    max-width: 350px;
     height: 100vh;
     background-color: var(--color-secondary);
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 5rem;
+    padding: 5rem 2rem 2rem;
     transition: right 0.3s ease;
     z-index: 95;
+    border-left: 2px solid var(--border);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
   }
 
   .nav-list.open {
@@ -147,17 +377,30 @@
   .nav-list ul {
     flex-direction: column;
     width: 100%;
+    gap: 0.5rem;
   }
 
   .nav-list li {
-    margin: 1rem 0;
     width: 100%;
-    text-align: center;
+  }
+
+  .nav-list a {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    background-color: rgba(159, 84, 234, 0.05);
+    border: 1px solid transparent;
+  }
+
+  .nav-list a:hover {
+    background-color: rgba(159, 84, 234, 0.15);
+    border-color: rgba(159, 84, 234, 0.3);
   }
 
   .hamburger {
     display: flex;
-    z-index: 100;
   }
 
   .desktop {
@@ -166,6 +409,202 @@
 
   .btn-mobile {
     display: block;
-    margin-top: 2rem;
+    width: 100%;
+  }
+
+  .icons-nav {
+    gap: 1rem;
+  }
+
+  .icon-label {
+    display: none;
+  }
+
+  .buttons-nav {
+    gap: 1rem;
+  }
+
+  .logo-nav a {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-list {
+    width: 85%;
+    padding: 4rem 1.5rem 2rem;
+  }
+
+  .logo-nav a {
+    font-size: 1.25rem;
+  }
+}
+
+/* Estilos específicos para admin */
+.admin-navbar {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #1a0a2e 100%);
+  border-bottom-color: var(--color-tertiary);
+}
+
+.admin-navbar .logo-nav a {
+  color: var(--color-tertiary);
+}
+
+.admin-navbar .logo-nav a:hover {
+  color: var(--color-tertiary-hover);
+}
+
+.admin-info-desktop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(203, 3, 3, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(203, 3, 3, 0.3);
+}
+
+.admin-greeting {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-badge-desktop,
+.admin-badge-mobile {
+  background: linear-gradient(135deg, var(--color-tertiary), var(--color-tertiary-hover));
+  color: var(--color-text);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-admin-info {
+  background-color: rgba(203, 3, 3, 0.1);
+  border-color: rgba(203, 3, 3, 0.3);
+}
+
+/* Menú de perfil admin */
+.admin-profile-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-tertiary);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(203, 3, 3, 0.3);
+  min-width: 280px;
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+}
+
+.admin-profile-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(203, 3, 3, 0.1);
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid rgba(203, 3, 3, 0.2);
+}
+
+.admin-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--color-tertiary), var(--color-tertiary-hover));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+}
+
+.admin-profile-info h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.admin-profile-info p {
+  margin: 0.25rem 0;
+  color: var(--color-text);
+  opacity: 0.8;
+  font-size: 0.875rem;
+}
+
+.admin-role {
+  display: inline-block;
+  background: rgba(203, 3, 3, 0.2);
+  color: var(--color-tertiary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.admin-profile-options {
+  padding: 1rem;
+}
+
+.admin-profile-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.admin-profile-option:hover {
+  background-color: rgba(203, 3, 3, 0.1);
+  color: var(--color-tertiary);
+  transform: translateX(4px);
+}
+
+.admin-profile-option.logout {
+  color: var(--color-tertiary) !important;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(203, 3, 3, 0.2);
+  padding-top: 1rem;
+}
+
+.admin-profile-option.logout:hover {
+  background-color: rgba(203, 3, 3, 0.2) !important;
+}
+
+.profile-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(203, 3, 3, 0.3), transparent);
+  margin: 0.5rem 0;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
